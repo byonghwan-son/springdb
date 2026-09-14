@@ -18,6 +18,10 @@ repositories {
 	mavenCentral()
 }
 
+configurations {
+	mockitoAgent
+}
+
 def querydslVersion = '7.6'
 
 dependencies {
@@ -47,8 +51,17 @@ dependencies {
 	annotationProcessor "io.github.openfeign.querydsl:querydsl-apt:${querydslVersion}:jpa"
 	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+
+	mockitoAgent('org.mockito:mockito-core') {
+		transitive = false
+	}
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.withType(Test).configureEach {
+	useJUnitPlatform()
+	jvmArgs("-javaagent:${configurations.mockitoAgent.asPath}")
 }

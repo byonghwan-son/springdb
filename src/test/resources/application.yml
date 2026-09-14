@@ -2,9 +2,10 @@ spring:
   profiles:
     active: test
   datasource:
-    url: jdbc:h2:tcp://localhost/~/springdb
-    username: sa
-    password:
+    generate-unique-name: false # jdbc:h2:mem:testdb
+#    url: jdbc:h2:tcp://localhost/~/springdbtest
+#    username: sa
+#    password:
   jpa:
     hibernate:
       ddl-auto: create

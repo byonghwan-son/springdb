@@ -5,22 +5,30 @@ import hello.itemservice.repository.ItemSearchCond;
 import hello.itemservice.repository.ItemUpdateDto;
 import hello.itemservice.repository.memory.MemoryItemRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@Transactional
 class ItemRepositoryTest {
 
     @Autowired
     ItemRepository itemRepository;
 
+    @BeforeEach
+    void setUp() {
+
+    }
+
     @AfterEach
-    void afterEach() {
+    void tearDown() {
         //MemoryItemRepository 의 경우 제한적으로 사용
         if (itemRepository instanceof MemoryItemRepository) {
             ((MemoryItemRepository) itemRepository).clearStore();
@@ -36,7 +44,7 @@ class ItemRepositoryTest {
         Item savedItem = itemRepository.save(item);
 
         //then
-        Item findItem = itemRepository.findById(item.getId()).get();
+        Item findItem = itemRepository.findById(item.getId()).orElseThrow();
         assertThat(findItem).isEqualTo(savedItem);
     }
 
@@ -52,7 +60,7 @@ class ItemRepositoryTest {
         itemRepository.update(itemId, updateParam);
 
         //then
-        Item findItem = itemRepository.findById(itemId).get();
+        Item findItem = itemRepository.findById(itemId).orElseThrow();
         assertThat(findItem.getItemName()).isEqualTo(updateParam.getItemName());
         assertThat(findItem.getPrice()).isEqualTo(updateParam.getPrice());
         assertThat(findItem.getQuantity()).isEqualTo(updateParam.getQuantity());
