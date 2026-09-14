@@ -68,7 +68,7 @@ public class JdbcTemplateItemRepositoryV3 implements ItemRepository {
 
   @Override
   public Optional<Item> findById(Long id) {
-    String query = "select id, item_name, price, quantity from Item where id = ?";
+    String query = "select id, item_name, price, quantity from Item where id = :id";
 
     try {
       Map<String, Long> param = Map.of("id", id);
@@ -79,6 +79,9 @@ public class JdbcTemplateItemRepositoryV3 implements ItemRepository {
       return Optional.empty();
     } catch (IncorrectResultSizeDataAccessException e) {
       throw new IllegalStateException("데이터가 2개 이상입니다.");
+    } catch (Exception e) {
+      log.error("예기치 않은 오류 발생 :: ", e);
+      return Optional.empty();
     }
   }
 
